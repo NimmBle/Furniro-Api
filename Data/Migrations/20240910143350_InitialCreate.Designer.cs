@@ -11,7 +11,7 @@ using furniro_server.Data;
 
 namespace furniro_server.Data.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(FurniroContext))]
     [Migration("20240910143350_InitialCreate")]
     partial class InitialCreate
     {

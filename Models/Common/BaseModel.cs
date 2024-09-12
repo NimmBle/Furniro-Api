@@ -6,7 +6,7 @@ namespace furniro_server.Models
     {
         [Key]
         public int Id { get; set; }
-        public DateTime CreationDate { get; set; }
-        public DateTime LastUpdateTime { get; set; }
+        public DateTime CreationDate { get; private set; } = DateTime.UtcNow;
+        public DateTime LastUpdateTime { get; set; } = DateTime.UtcNow;
     }
 }
