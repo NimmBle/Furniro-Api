@@ -40,7 +40,7 @@ namespace furniro_server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<Product>>> CreateProduct(ProductDTO ProductDTO) {
+        public async Task<ActionResult<Product>> CreateProduct(ProductDTO ProductDTO) {
 
             var Product = new Product {
 
