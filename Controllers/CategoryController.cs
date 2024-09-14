@@ -18,14 +18,17 @@ namespace furniro_server.Controllers
         }   
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> GetAllCategories(int skip, int take) {
-           return await _categoryRepository.GetAll(skip, take);
+        public async Task<ActionResult<IEnumerable<Category>>> GetAllCategories(int skip, int take) 
+        {
+           return Ok(await _categoryRepository.GetAllCategories(skip, take));
         }
 
         [HttpGet]
         [Route("{id:int}")]
-        public async Task<ActionResult<Category>> GetOneCategories(int id) {
-           var category = await _categoryRepository.GetOne(id);
+        public async Task<ActionResult<Category>> GetOneCategories(int id) 
+        {
+
+           var category = await _categoryRepository.GetCategoryById(id);
 
            if (category is null ) return NotFound();
            else return Ok(category);
@@ -33,20 +36,23 @@ namespace furniro_server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Category>> CreateCategory(CategoryCreateDTO categoryDTO) {
-            return await _categoryRepository.Create(categoryDTO);
+        public async Task<ActionResult<Category>> CreateCategory(CategoryCreateDTO categoryDTO) 
+        {
+            return Ok(await _categoryRepository.AddCategory(categoryDTO));
         }
 
         [HttpPut]
         [Route("{id:int}")]
-        public async Task<ActionResult<Category?>> UpdateCategory(int id, CategoryCreateDTO categoryDTO) {
-           return await _categoryRepository.Update(id, categoryDTO); 
+        public async Task<ActionResult<Category?>> UpdateCategory(int id, CategoryCreateDTO categoryDTO) 
+        {
+            return Ok(await _categoryRepository.UpdateCategory(id, categoryDTO)); 
         }
 
         [HttpDelete]
         [Route("{id:int}")]
-        public async Task<bool> DeleteCategory(int id) {
-            return await _categoryRepository.Delete(id);
+        public async Task<bool> DeleteCategory(int id) 
+        {
+            return await _categoryRepository.DeleteCategory(id);
         }
     }
 }

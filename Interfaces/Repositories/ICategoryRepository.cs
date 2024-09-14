@@ -1,19 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using furniro_server.Models;
-using furniro_server.Models.DTOs;
-using Microsoft.AspNetCore.Mvc;
-
 namespace furniro_server.Interfaces.Repositories
 {
+    using furniro_server.Models;
+    using furniro_server.Models.DTOs;
+    using furniro_server.Models.Entities;
+
     public interface ICategoryRepository
     {
-        Task<ActionResult<IEnumerable<Category>>> GetAll(int skip, int take);
-        Task<Category> GetOne(int id);
-        Task<Category> Create(CategoryCreateDTO categoryDTO);
-        Task<Category?> Update(int id, CategoryCreateDTO categoryDTO);
-        Task<bool> Delete(int id);
+        Task<ServiceResponse<IEnumerable<Category>>> GetAllCategories(int skip, int take);
+        Task<ServiceResponse<Category>> GetCategoryById(int id);
+        Task<ServiceResponse<Category>> AddCategory(CategoryCreateDTO categoryDTO);
+        Task<ServiceResponse<Category>> UpdateCategory(int id, CategoryCreateDTO categoryDTO);
+        Task<bool> DeleteCategory(int id);
     }
 }
