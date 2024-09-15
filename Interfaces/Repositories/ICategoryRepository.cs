@@ -8,8 +8,8 @@ namespace furniro_server.Interfaces.Repositories
     {
         Task<ServiceResponse<IEnumerable<Category>>> GetAllCategories(int skip, int take);
         Task<ServiceResponse<Category>> GetCategoryById(int id);
-        Task<ServiceResponse<Category>> AddCategory(CategoryCreateDTO categoryDTO);
-        Task<ServiceResponse<Category>> UpdateCategory(int id, CategoryCreateDTO categoryDTO);
+        Task<ServiceResponse<Category>> AddCategory(AddCategoryDto categoryDTO);
+        Task<ServiceResponse<Category>> UpdateCategory(int id, AddCategoryDto categoryDTO);
         Task<bool> DeleteCategory(int id);
     }
 }

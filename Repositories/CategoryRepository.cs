@@ -38,7 +38,7 @@ namespace furniro_server.Repositories
             return ServiceResponse; 
         }
 
-        public async Task<ServiceResponse<Category>> AddCategory(CategoryCreateDTO categoryDTO)
+        public async Task<ServiceResponse<Category>> AddCategory(AddCategoryDto categoryDTO)
         {
             var category = new Category {
                 Name = categoryDTO.Name,
@@ -69,7 +69,7 @@ namespace furniro_server.Repositories
             }             
         }
 
-        public async Task<ServiceResponse<Category>> UpdateCategory(int id, CategoryCreateDTO categoryDTO)
+        public async Task<ServiceResponse<Category>> UpdateCategory(int id, AddCategoryDto categoryDTO)
         {
             ServiceResponse<Category> ServiceResponse = new();
             var category = await _context.Categories.FindAsync(id);

@@ -36,23 +36,24 @@ namespace furniro_server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Category>> CreateCategory(CategoryCreateDTO categoryDTO) 
+        public async Task<ActionResult<Category>> CreateCategory(AddCategoryDto categoryDTO) 
         {
             return Ok(await _categoryRepository.AddCategory(categoryDTO));
         }
 
         [HttpPut]
         [Route("{id:int}")]
-        public async Task<ActionResult<Category?>> UpdateCategory(int id, CategoryCreateDTO categoryDTO) 
+        public async Task<ActionResult<Category?>> UpdateCategory(int id, AddCategoryDto categoryDTO) 
         {
             return Ok(await _categoryRepository.UpdateCategory(id, categoryDTO)); 
         }
 
         [HttpDelete]
         [Route("{id:int}")]
-        public async Task<bool> DeleteCategory(int id) 
+        public async Task<IActionResult> DeleteCategory(int id) 
         {
-            return await _categoryRepository.DeleteCategory(id);
+            await _categoryRepository.DeleteCategory(id);
+            return NoContent();
         }
     }
 }
