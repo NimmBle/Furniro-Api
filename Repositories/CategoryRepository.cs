@@ -1,5 +1,6 @@
 namespace furniro_server.Repositories
 {
+    using AutoMapper;
     using furniro_server.Data;
     using furniro_server.Interfaces.Repositories;
     using furniro_server.Models;
@@ -11,44 +12,48 @@ namespace furniro_server.Repositories
     {
 
         private readonly FurniroContext _context;
+        private readonly IMapper _mapper;
 
-        public CategoryRepository(FurniroContext context)
+        public CategoryRepository(FurniroContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
         
-        public async Task<ServiceResponse<IEnumerable<Category>>> GetAllCategories(int skip, int take)
+        public async Task<ServiceResponse<IEnumerable<GetCategoryDto>>> GetAllCategories(int skip, int take)
         {
-            ServiceResponse<IEnumerable<Category>> ServiceResponse = new();
-
-            ServiceResponse.Data = await _context.Categories
+        
+            ServiceResponse<IEnumerable<GetCategoryDto>> serviceResponse = new();
+            serviceResponse.Data =  
+                await _context.Categories
                 .OrderBy(c => c.Id)
                 .Skip(skip)
                 .Take(take)
-                .ToListAsync();
-            return ServiceResponse;
+                .Select(c => _mapper.Map<GetCategoryDto>(c)).ToListAsync();
+              
+            return serviceResponse;
         }
 
-        public async Task<ServiceResponse<Category>> GetCategoryById(int id)
+        public async Task<ServiceResponse<GetCategoryDto>> GetCategoryById(int id)
         {
-            ServiceResponse<Category> ServiceResponse = new();
+            ServiceResponse<GetCategoryDto> ServiceResponse = new();
 
-            ServiceResponse.Data = await _context.Categories
-                .FirstOrDefaultAsync(c => c.Id == id);
+            ServiceResponse.Data = _mapper.Map<GetCategoryDto>(
+                await _context.Categories
+                .FirstOrDefaultAsync(c => c.Id == id)
+            );
+            
             return ServiceResponse; 
         }
 
-        public async Task<ServiceResponse<Category>> AddCategory(AddCategoryDto categoryDTO)
+        public async Task<ServiceResponse<GetCategoryDto>> AddCategory(AddCategoryDto addCategory)
         {
-            var category = new Category {
-                Name = categoryDTO.Name,
-                CoverPhoto = categoryDTO.CoverPhoto
-            };
-            ServiceResponse<Category> ServiceResponse = new ServiceResponse<Category>();
 
-            await _context.Categories.AddAsync(category);
+            ServiceResponse<GetCategoryDto> ServiceResponse = new();
+
+            await _context.Categories.AddAsync(_mapper.Map<Category>(addCategory));
             await _context.SaveChangesAsync();
-            ServiceResponse.Data = category;
+            ServiceResponse.Data = _mapper.Map<GetCategoryDto>(addCategory);
             return ServiceResponse;
         }
 
@@ -69,9 +74,9 @@ namespace furniro_server.Repositories
             }             
         }
 
-        public async Task<ServiceResponse<Category>> UpdateCategory(int id, AddCategoryDto categoryDTO)
+        public async Task<ServiceResponse<GetCategoryDto>> UpdateCategory(int id, AddCategoryDto addCategory)
         {
-            ServiceResponse<Category> ServiceResponse = new();
+            ServiceResponse<GetCategoryDto> ServiceResponse = new();
             var category = await _context.Categories.FindAsync(id);
 
             if (category is null) {
@@ -79,11 +84,10 @@ namespace furniro_server.Repositories
                 return ServiceResponse;
             } 
 
-            category.Name = categoryDTO.Name;
-            category.CoverPhoto = categoryDTO.CoverPhoto;
+            category = _mapper.Map<Category>(addCategory);
 
             await _context.SaveChangesAsync();
-            ServiceResponse.Data = category;
+            ServiceResponse.Data = _mapper.Map<GetCategoryDto>(addCategory);
             return ServiceResponse;
         }
     }
