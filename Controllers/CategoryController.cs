@@ -3,10 +3,9 @@ namespace furniro_server.Controllers
     using furniro_server.Interfaces.Repositories;
     using furniro_server.Models;
     using furniro_server.Models.DTOs;
+    using furniro_server.Models.Entities;
     using Microsoft.AspNetCore.Mvc;
 
-    [ApiController]
-    [Route("api/[controller]")]
     public class CategoryController : BaseApiController
     {
         
@@ -43,9 +42,11 @@ namespace furniro_server.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
-        public async Task<ActionResult<Category?>> UpdateCategory(int id, AddCategoryDto categoryDTO) 
+        public async Task<ActionResult<ServiceResponse<GetCategoryDto>>> UpdateCategory(int id, AddCategoryDto categoryDTO) 
         {
-            return Ok(await _categoryRepository.UpdateCategory(id, categoryDTO)); 
+            ServiceResponse<GetCategoryDto> serviceResponse = await _categoryRepository.UpdateCategory(id, categoryDTO); 
+            if (serviceResponse.Data == null) return NotFound(serviceResponse);
+            else return Ok(serviceResponse);
         }
 
         [HttpDelete]

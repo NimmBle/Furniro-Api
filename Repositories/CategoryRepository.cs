@@ -20,10 +20,9 @@ namespace furniro_server.Repositories
             _mapper = mapper;
         }
         
-        public async Task<ServiceResponse<IEnumerable<GetCategoryDto>>> GetAllCategories(int skip, int take)
+        public async Task<ServiceResponse<List<GetCategoryDto>>> GetAllCategories(int skip, int take)
         {
-        
-            ServiceResponse<IEnumerable<GetCategoryDto>> serviceResponse = new();
+            ServiceResponse<List<GetCategoryDto>> serviceResponse = new();
             serviceResponse.Data =  
                 await _context.Categories
                 .OrderBy(c => c.Id)
@@ -48,12 +47,30 @@ namespace furniro_server.Repositories
 
         public async Task<ServiceResponse<GetCategoryDto>> AddCategory(AddCategoryDto addCategory)
         {
-
             ServiceResponse<GetCategoryDto> ServiceResponse = new();
+            Category category = _mapper.Map<Category>(addCategory);
 
-            await _context.Categories.AddAsync(_mapper.Map<Category>(addCategory));
+            await _context.Categories.AddAsync(category);
             await _context.SaveChangesAsync();
             ServiceResponse.Data = _mapper.Map<GetCategoryDto>(addCategory);
+            return ServiceResponse;
+        }
+
+        public async Task<ServiceResponse<GetCategoryDto>> UpdateCategory(int id, AddCategoryDto addCategory)
+        {
+            ServiceResponse<GetCategoryDto> ServiceResponse = new();
+            try
+            {
+                var category = await _context.Categories.FindAsync(id);
+                category = _mapper.Map<Category>(addCategory);
+                await _context.SaveChangesAsync();
+                ServiceResponse.Data = _mapper.Map<GetCategoryDto>(addCategory);
+            }
+            catch (Exception ex)
+            {
+                ServiceResponse.Success = false;
+                ServiceResponse.Message = ex.Message;
+            }   
             return ServiceResponse;
         }
 
@@ -65,6 +82,7 @@ namespace furniro_server.Repositories
                     .Categories
                     .Where(c => c.Id.Equals(id))
                     .ExecuteDeleteAsync();
+                await _context.SaveChangesAsync();
                 return true;
             }
             catch (Exception ex)
@@ -72,23 +90,6 @@ namespace furniro_server.Repositories
                 Console.WriteLine(ex);
                 return false;   
             }             
-        }
-
-        public async Task<ServiceResponse<GetCategoryDto>> UpdateCategory(int id, AddCategoryDto addCategory)
-        {
-            ServiceResponse<GetCategoryDto> ServiceResponse = new();
-            var category = await _context.Categories.FindAsync(id);
-
-            if (category is null) {
-                ServiceResponse.Success = false;
-                return ServiceResponse;
-            } 
-
-            category = _mapper.Map<Category>(addCategory);
-
-            await _context.SaveChangesAsync();
-            ServiceResponse.Data = _mapper.Map<GetCategoryDto>(addCategory);
-            return ServiceResponse;
         }
     }
 }
