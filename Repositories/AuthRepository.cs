@@ -1,5 +1,7 @@
 namespace furniro_server.Repositories
 {
+    using System.IdentityModel.Tokens.Jwt;
+    using System.Security.Claims;
     using System.Security.Cryptography;
     using System.Text;
     using AutoMapper;
@@ -7,17 +9,21 @@ namespace furniro_server.Repositories
     using furniro_server.Interfaces.Repositories;
     using furniro_server.Models.DTOs.UserDtos;
     using furniro_server.Models.Entities;
+    using Microsoft.AspNetCore.DataProtection;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.IdentityModel.Tokens;
 
     public class AuthRepository : IAuthRepository
     {
         private readonly FurniroContext _context;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
-        public AuthRepository(FurniroContext context, IMapper mapper)
+        public AuthRepository(FurniroContext context, IMapper mapper, IConfiguration configuration)
         {
             _context = context;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
 
@@ -62,7 +68,7 @@ namespace furniro_server.Repositories
             }
             else 
             {
-                serviceResponse.Data = user.Id.ToString();
+                serviceResponse.Data = CreateToken(user);
             }
             return serviceResponse;
         }
@@ -94,6 +100,27 @@ namespace furniro_server.Repositories
                 }
                 return true;
             }
+        }
+
+        private string CreateToken(User user) {
+
+            List<Claim> claims = new() 
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username)
+            };
+            byte[] secretAsByteArray = Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value);
+
+            SymmetricSecurityKey key = new(secretAsByteArray);
+            SigningCredentials creds = new(key, SecurityAlgorithms.HmacSha256Signature);
+            SecurityTokenDescriptor tokenDescriptor = new() {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.Now.AddHours(3),
+                SigningCredentials = creds
+            };
+            JwtSecurityTokenHandler tokenHandler = new();
+            SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
     }
 }

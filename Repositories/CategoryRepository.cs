@@ -20,11 +20,12 @@ namespace furniro_server.Repositories
             _mapper = mapper;
         }
         
-        public async Task<ServiceResponse<List<GetCategoryDto>>> GetAllCategories(int skip, int take)
+        public async Task<ServiceResponse<List<GetCategoryDto>>> GetAllCategories(int userId, int skip, int take)
         {
             ServiceResponse<List<GetCategoryDto>> serviceResponse = new();
             serviceResponse.Data =  
                 await _context.Categories
+                // .Where(c => c.Products.Id == userId)
                 .OrderBy(c => c.Id)
                 .Skip(skip)
                 .Take(take)

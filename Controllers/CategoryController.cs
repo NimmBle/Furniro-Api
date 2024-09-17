@@ -1,15 +1,19 @@
 namespace furniro_server.Controllers
 {
+    using System.Security.Claims;
     using furniro_server.Interfaces.Repositories;
     using furniro_server.Models;
     using furniro_server.Models.DTOs;
     using furniro_server.Models.Entities;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
 
+    [Authorize]
     public class CategoryController : BaseApiController
     {
         
         protected readonly ICategoryRepository _categoryRepository;
+        public ClaimsPrincipal User { get; }
 
         public CategoryController(ICategoryRepository categoryRepository)
         {
@@ -19,7 +23,8 @@ namespace furniro_server.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Category>>> GetAllCategories(int skip, int take) 
         {
-           return Ok(await _categoryRepository.GetAllCategories(skip, take));
+            int id = int.Parse(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            return Ok(await _categoryRepository.GetAllCategories(id, skip, take));
         }
 
         [HttpGet]
