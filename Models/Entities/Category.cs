@@ -7,7 +7,8 @@ namespace furniro_server.Models
 
         public required string Name { get; set; }
         public required string CoverPhoto { get; set; }
-        public ICollection<Product> Products { get; set; }
+
+        public ICollection<Product>? Products { get; set; } = new List<Product>();
 
     }
 }

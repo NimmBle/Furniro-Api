@@ -10,7 +10,7 @@ using furniro_server.Data;
 
 namespace furniro_server.Data.Migrations
 {
-    [DbContext(typeof(FurniroContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -58,14 +58,12 @@ namespace furniro_server.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AdditionalPhotos")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Colors")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CoverPhoto")
@@ -78,7 +76,7 @@ namespace furniro_server.Data.Migrations
                     b.Property<int>("Discount")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsNew")
+                    b.Property<bool?>("IsNew")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("LastUpdateTime")
@@ -103,7 +101,6 @@ namespace furniro_server.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Sizes")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -111,37 +108,6 @@ namespace furniro_server.Data.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("furniro_server.Models.Entities.User", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("LastUpdateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<byte[]>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<byte[]>("PasswordSalt")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("furniro_server.Models.Entities.Product", b =>
