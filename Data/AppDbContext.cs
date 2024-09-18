@@ -28,6 +28,14 @@ namespace furniro_server.Data
                 .WithMany(c => c.Products)
                 .HasForeignKey(p => p.CategoryId);
 
+            modelBuilder.Entity<Client>()
+                .HasMany(c => c.Orders)
+                .WithOne(o => o.Client);
+
+            modelBuilder.Entity<FullAddress>()
+                .HasMany(fa => fa.Orders)
+                .WithOne(o => o.Address);
+                
             // modelBuilder.Entity<Product>()
             //     .HasMany(p => p.Sizes)
             //     .WithMany(s => s.Products);
@@ -45,7 +53,7 @@ namespace furniro_server.Data
                 .WithMany(o => o.OrderProducts)
                 .HasForeignKey(op => op.OrderId);
 
-            
+
             base.OnModelCreating(modelBuilder);
         }
     }

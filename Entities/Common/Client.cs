@@ -2,7 +2,7 @@ namespace furniro_server.Entities
 {
     using System.ComponentModel.DataAnnotations;
 
-    public class Client : 
+    public class Client : BaseEntity
     {
         [Required]
         public string FirstName { get; set; }
@@ -11,5 +11,7 @@ namespace furniro_server.Entities
         public string LastName { get; set; }
 
         public string CompanyName { get; set; }
+
+        public HashSet<Order> Orders { get; set; }
     }
 }

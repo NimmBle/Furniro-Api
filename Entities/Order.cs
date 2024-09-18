@@ -1,6 +1,7 @@
 namespace furniro_server.Entities
 {
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public class Order : BaseEntity
     {
@@ -8,9 +9,11 @@ namespace furniro_server.Entities
         public HashSet<OrderProduct> OrderProducts { get; set; }
 
         [Required]
+        public Guid ClientId { get; set; }
         public Client Client { get; set; }
 
         [Required]
+        public Guid AddressId { get; set; }
         public FullAddress Address { get; set; }
 
         [Required]

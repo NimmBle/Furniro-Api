@@ -12,7 +12,7 @@ namespace furniro_server.Entities
         [MaxLength(256)]
         public string Comment { get; set; }
 
-        public int ProductId { get; set; }
+        public Guid ProductId { get; set; }
         public Product Product { get; set; }
     }
 }

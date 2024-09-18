@@ -2,7 +2,7 @@ namespace furniro_server.Entities
 {
     using System.ComponentModel.DataAnnotations;
 
-    public class FullAddress
+    public class FullAddress : BaseEntity
     {
         [Required]
         [MinLength(2)]
@@ -23,5 +23,7 @@ namespace furniro_server.Entities
         [MinLength(1000)]
         [MaxLength(9999)]
         public int PostalCode { get; set; }
+
+        public HashSet<Order> Orders { get; set; }
     }
 }
