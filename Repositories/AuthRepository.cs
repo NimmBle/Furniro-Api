@@ -102,8 +102,8 @@ namespace furniro_server.Repositories
             }
         }
 
-        private string CreateToken(User user) {
-
+        private string CreateToken(User user) 
+        {
             List<Claim> claims = new() 
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),

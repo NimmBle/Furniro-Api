@@ -1,66 +1,58 @@
 namespace furniro_server.Controllers
 {
+    using AutoMapper;
     using furniro_server.Data;
     using furniro_server.Models.DTOs;
+    using furniro_server.Models.DTOs.ProductDtos;
     using furniro_server.Models.Entities;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
 
     public class ProductController : BaseApiController
     {
-        private readonly ILogger<ProductController> _logger;
         private readonly FurniroContext _context;
+        private readonly IMapper _mapper;  
 
-        public ProductController(ILogger<ProductController> logger, FurniroContext context)
+        public ProductController(FurniroContext context, IMapper mapper)
         {
-            _logger = logger;
             _context = context;
+            _mapper = mapper;
         }
 
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts() {
+        public async Task<ActionResult<IEnumerable<GetProductDto>>> GetProducts() {
 
-            var Products = await _context.Products.ToListAsync();
+            var products = await _context.Products.ToListAsync();
             
-            if (Products == null)
+            if (products == null)
                 return NotFound();
             else
-                return Ok(Products);
+                return Ok(_mapper.Map<GetProductDto>(products));
         }
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<ActionResult<Product>> GetOneProduct(int id) {
+        public async Task<ActionResult<GetProductDto>> GetProductById(int id) {
+
             var product = await _context.Products.FindAsync(id);
             if (product == null) {
                 return NotFound();
             }
-            return Ok(product);
+
+            return Ok(_mapper.Map<GetProductDto>(product));
         }
 
         [HttpPost]
-        public async Task<ActionResult<Product>> CreateProduct(ProductDTO ProductDTO) {
+        public async Task<ActionResult<GetProductDto>> CreateProduct(AddProductDto addProductDto) {
 
-            var Product = new Product {
+            var product = _mapper.Map<Product>(addProductDto);
 
-                Name = ProductDTO.Name,
-                CategoryId = ProductDTO.CategoryId,
-                ShortDescription = ProductDTO.ShortDescription,
-                LongDescription = ProductDTO.LongDescription,
-                Price = ProductDTO.Price,
-                Discount = ProductDTO.Discount,
-                Quantity = ProductDTO.Quantity,
-                IsNew = ProductDTO.IsNew,
-                CoverPhoto = ProductDTO.CoverPhoto,
-                AdditionalPhotos = ProductDTO.AdditionalPhotos,
-                Sizes = ProductDTO.Sizes,
-                Colors = ProductDTO.Colors
-            };
-
-            await _context.AddAsync(Product);
+            await _context.AddAsync(product);
             await _context.SaveChangesAsync();
-            return Ok(Product);
+
+
+            return Ok(_mapper.Map<GetProductDto>(product));
         }
 
 

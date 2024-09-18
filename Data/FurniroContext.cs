@@ -15,10 +15,24 @@ namespace furniro_server.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.Category)
-                .WithMany(p => p.Products)
-                .HasForeignKey(p => p.CategoryId);
+            modelBuilder
+                .Entity<Product>()
+                .Property(s => s.Sizes)
+                .HasConversion(
+                    v => String.Join(",", v),
+                    v => v.Split(",", StringSplitOptions.RemoveEmptyEntries)
+                          .Select(e => (Sizes)Enum.Parse(typeof(Sizes), e))
+                          .ToArray()
+                );
+
+            modelBuilder
+                .Entity<ProductCart>()
+                .HasKey(pc => new { pc.ProductId, pc.CartId });
+
+            modelBuilder
+                .Entity<ProductCart>()
+                .HasOne(pc => pc.Product)
+                .WithMany(p => p.)
         }
     }
 }

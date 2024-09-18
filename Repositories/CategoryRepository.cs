@@ -1,5 +1,6 @@
 namespace furniro_server.Repositories
 {
+    using System.Security.Claims;
     using AutoMapper;
     using furniro_server.Data;
     using furniro_server.Interfaces.Repositories;
@@ -13,19 +14,22 @@ namespace furniro_server.Repositories
 
         private readonly FurniroContext _context;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CategoryRepository(FurniroContext context, IMapper mapper)
+        public CategoryRepository(FurniroContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
         
         public async Task<ServiceResponse<List<GetCategoryDto>>> GetAllCategories(int userId, int skip, int take)
         {
             ServiceResponse<List<GetCategoryDto>> serviceResponse = new();
+
             serviceResponse.Data =  
                 await _context.Categories
-                // .Where(c => c.Products.Id == userId)
+                //.Where(c => c.Products.Id == userId)
                 .OrderBy(c => c.Id)
                 .Skip(skip)
                 .Take(take)
@@ -92,5 +96,7 @@ namespace furniro_server.Repositories
                 return false;   
             }             
         }
+    
+        private int GetUserId() => int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
     }
 }
