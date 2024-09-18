@@ -2,7 +2,6 @@ namespace furniro_server.Models.Entities
 {
     public class Product : BaseModel
     {
-        public required string Name { get; set; }
         public required int CategoryId { get; set; }
         public Category Category { get; set; }
         public required string ShortDescription { get; set; }
